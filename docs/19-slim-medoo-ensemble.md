@@ -132,7 +132,7 @@ public function reserve(
 
 Ici, le code raconte le métier.
 
-## Câblage manuel
+## Câblage manuel du starter
 
 Le starter crée les objets explicitement :
 
@@ -151,7 +151,11 @@ Parce que ce câblage est :
 - compréhensible ;
 - suffisant pour votre taille de projet.
 
-Un conteneur pourra être étudié plus tard si le projet le justifie.
+La documentation officielle de Medoo présente également une intégration Slim avec PHP-DI. C'est une option pertinente sur un projet plus structuré, mais **le starter choisit volontairement le câblage manuel pour rendre les dépendances visibles pendant l'apprentissage**.
+
+Pour aller plus loin :
+- https://medoo.in/api/collaboration
+- https://php-di.org/
 
 ## Web et API sur les mêmes services
 

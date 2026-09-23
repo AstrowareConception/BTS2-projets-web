@@ -21,6 +21,37 @@ Cette semaine n’est pas un TP géant. Vous allez travailler comme sur une peti
 6. Traitez une évolution et un incident en cours de semaine.
 7. Constituez vos preuves techniques et votre documentation.
 
+## Kit technique
+
+Vous avez déjà étudié la théorie. Cette section sert de **référence rapide pendant le projet**.
+
+- [Starter Kit exécutable Slim + Medoo](starter-kit/README.md)
+- [17 — Slim 4 : guide pratique](docs/17-slim-pratique.md)
+- [18 — Medoo : guide pratique](docs/18-medoo-pratique.md)
+- [19 — Slim + Medoo ensemble](docs/19-slim-medoo-ensemble.md)
+- [20 — Recettes de code](docs/20-recettes-code.md)
+- [21 — Ressources externes sélectionnées](docs/21-ressources-externes.md)
+- [22 — Dépannage technique](docs/22-depannage-technique.md)
+- [23 — Tutoriel : étendre le starter](docs/23-tutoriel-etendre-starter.md)
+
+Le starter illustre volontairement :
+
+```text
+Route Slim
+   ↓
+Controller
+   ↓
+Service
+   ↓
+Repository
+   ↓
+Medoo
+   ↓
+MySQL / MariaDB
+```
+
+Il contient aussi une vue HTML, des routes Web, une petite API JSON, un schéma SQL et des données de démonstration. **Il doit être adapté, pas cloné sans compréhension.**
+
 ## Démarrage rapide
 
 - [00 — Démarrage](docs/00-demarrage.md)
@@ -37,6 +68,9 @@ Cette semaine n’est pas un TP géant. Vous allez travailler comme sur une peti
 - [11 — Livrables](docs/11-livrables.md)
 - [12 — Bonus](docs/12-bonus.md)
 - [13 — Checklist finale](docs/13-checklist.md)
+- [14 — Correspondance BTS](docs/14-correspondance-bts.md)
+- [15 — Rituel quotidien](docs/15-rituel-quotidien.md)
+- [16 — Guide d’autonomie](docs/16-guide-autonomie.md)
 
 ## Philosophie
 

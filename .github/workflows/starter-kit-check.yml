@@ -1,0 +1,41 @@
+name: Starter kit check
+
+on:
+  push:
+    paths:
+      - "starter-kit/**"
+      - ".github/workflows/starter-kit-check.yml"
+  pull_request:
+    paths:
+      - "starter-kit/**"
+      - ".github/workflows/starter-kit-check.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: starter-kit
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          tools: composer:v2
+          coverage: none
+
+      - name: Validate composer.json
+        run: composer validate --no-check-publish
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: PHP syntax
+        run: |
+          find public config routes src templates -name "*.php" -print0 \
+            | xargs -0 -n1 php -l

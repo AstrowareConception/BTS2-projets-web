@@ -1,0 +1,20 @@
+{
+  "name": "astroware/bts2-web-starter",
+  "description": "Starter pédagogique Slim 4 + Medoo pour BTS SIO SLAM",
+  "type": "project",
+  "require": {
+    "php": "^8.2",
+    "slim/slim": "^4.15",
+    "slim/psr7": "^1.7",
+    "catfan/medoo": "^2.6",
+    "vlucas/phpdotenv": "^5.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  },
+  "scripts": {
+    "serve": "php -S 127.0.0.1:8080 -t public public/router.php"
+  }
+}

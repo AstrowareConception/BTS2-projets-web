@@ -1,33 +1,45 @@
-# Zone enseignant — Pilotage de la semaine
+# Zone enseignant — Pilotage de novembre 2026
 
-Cette zone regroupe les outils de pilotage. Les étudiants n’ont pas besoin de la consulter avant les moments indiqués.
+**Attention :** ce dossier est dans un dépôt public. Les étudiants peuvent donc consulter les cartes d'évolution et d'incident en avance. Pour garder une surprise, transmettre uniquement les cartes choisies au moment voulu ou déplacer les consignes détaillées dans un espace privé.
+
+## Avant lundi
+
+- lire le [calibrage pédagogique](calibrage-pedagogique.md) ;
+- vérifier le starter et le parcours du [lundi au vendredi](../docs/25-parcours-et-jalons.md) ;
+- préparer la feuille des six étudiants ;
+- préparer un créneau court de validation des maquettes et triplets.
 
 ## Lundi
-- valider le sujet ;
-- valider la combinaison de 3 règles contractuelles ;
-- vérifier l’unicité ;
-- contrôler le modèle et la maquette.
+
+Valider pour chaque étudiant :
+- sujet et client ;
+- 3 contractuelles + 3 extensions ;
+- unicité du triplet ;
+- familles et difficulté ;
+- scène de démonstration ;
+- MCD/MLD et maquettes.
 
 ## Mardi
-- contrôler l’authentification et les droits ;
-- vérifier qu’au moins un workflow traverse réellement plusieurs couches ;
-- repérer les étudiants en retard.
+
+Exiger la preuve d'une véritable authentification/autorisation, d'une entité reliée à la base et d'un workflow complet. Pas de nouvelles technologies de frontend imposées.
 
 ## Mercredi
-- vérifier les 3 règles contractuelles ;
-- attribuer une évolution depuis [les cartes d’évolution](cartes-evolutions.md).
+
+Contrôler les **3 règles contractuelles** avec scénarios positif/négatif. Vérifier API JSON et évolution analysée. Attribuer l'évolution depuis [les cartes adaptées](cartes-evolutions.md).
 
 ## Jeudi
-- valider l’évolution ;
-- attribuer un incident depuis [les cartes d’incident](cartes-incidents.md) ;
-- exiger un test de non-régression.
+
+Vérifier l'évolution, choisir un [incident crédible](cartes-incidents.md) **sur une fonctionnalité présente**, exiger diagnostic et test de non-régression.
 
 ## Vendredi
-- recette ;
-- déploiement ;
-- sauvegarde/restauration ;
-- release ;
-- démonstration ;
-- contrôle des preuves.
 
-Voir [grille de suivi](grille-suivi.md).
+Recette, sécurité, sauvegarde/restauration, déploiement, release et démonstration. Si retard, arrêter les extensions et sécuriser la RP.
+
+## Pilotage et appréciation
+
+- [Grille de suivi quotidienne](grille-suivi.md)
+- [Grille indicative de fin de semaine](grille-finale.md)
+- [Répartition des six étudiants](repartition-6-etudiants.md)
+- [Modèle de démonstration](../templates/DEMONSTRATION.md)
+
+Ne pas déduire automatiquement la validation d'une compétence E4/E5 de la seule existence d'une fonctionnalité : regarder le **travail personnel et ses preuves**.

@@ -30,13 +30,13 @@ Vous créez un outil professionnel **de planning et d'exploitation**. Son habill
 
 ## Les 10 règles métier
 
-### E1 — « Première réservation, première servie »
-**Famille : réservation / intégrité · Difficulté : intermédiaire.**
+### E1 — « Une option pendant quinze minutes »
+**Famille : réservation / temps · Difficulté : intermédiaire.**
 
-Une réservation `CONFIRMEE` bloque le créneau privatisé ; une demande concurrente reçoit un refus explicite. La réservation annulée libère le créneau. Testez la cohérence en base, pas seulement l'affichage d'un bouton.
+Lorsqu'un client sélectionne un créneau libre, il peut poser une **option non payante de 15 minutes** (`EN_ATTENTE`). Tant que cette option est valide, le créneau est temporairement indisponible aux autres groupes ; après expiration, il est à nouveau réservable. Une confirmation après expiration est refusée. Le délai est vérifié **à chaque demande HTTP** : aucun cron n'est requis.
 
-**Démo :** deux groupes veulent la même session ; seul le premier obtient confirmation.  
-**Tests :** doublon refusé ; annulation libératrice ; base cohérente.
+**Démo :** groupe A pose une option, groupe B est refusé ; quinze minutes plus tard, le groupe B peut réserver.  
+**Tests :** option active bloquante ; option expirée libératrice ; confirmation hors délai refusée.
 
 ### E2 — « Le mécanisme critique est hors service »
 **Famille : incident / disponibilité · Difficulté : intermédiaire.**

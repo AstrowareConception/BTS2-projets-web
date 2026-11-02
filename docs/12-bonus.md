@@ -1,56 +1,36 @@
-# 12 — Bonus pour aller plus loin
+# 12 — Bonus, après stabilisation du socle
 
-Les bonus ne compensent jamais un socle incomplet.
+**Ne choisissez pas un bonus qui exige de refaire votre architecture.** Les trois règles contractuelles, la sécurité, l'évolution et la recette passent avant.
 
-## Niveau 1 — Finition professionnelle
+## Des bonus qui rendent le produit plus vivant
 
-- pagination propre ;
-- filtres combinables ;
-- recherche multi-critères ;
-- tableaux de bord avec indicateurs réellement utiles ;
-- UX soignée et responsive ;
-- composants réutilisables ;
-- gestion d’erreurs élégante.
+- **Backstage :** conducteur imprimable, calendrier de bénévoles, vue « 30 minutes avant ouverture », badge des urgences.
+- **RepairLab :** fiche équipement par QR code, CSV d'inventaire, historique machine imprimable, indicateur de réparation.
+- **EscapeOps :** mode « cockpit » grand écran, calendrier des sessions, suivi de retard, QR code d'accueil fictif.
 
-## Niveau 2 — Technique
+## Bonus de qualité
 
-- tests automatisés plus complets ;
-- couverture de code argumentée ;
-- migrations de BDD ;
-- CI GitHub Actions ;
-- analyse statique ;
-- linter/formatter ;
-- OpenAPI ;
-- génération de documentation.
+- tests automatisés du domaine (PHPUnit) ;
+- automatisation des tests dans GitHub Actions ;
+- analyse statique PHPStan, rapport de couverture et explication des cas non couverts ;
+- audit des dépendances Composer ;
+- migration SQL versionnée ;
+- OpenAPI décrivant les endpoints réellement exposés ;
+- CI de syntaxe, tests et checks de sécurité ;
+- interface responsive et accessible ;
+- pagination et filtres combinés ;
+- Docker Compose local lorsque utile.
 
-## Niveau 3 — Architecture
+## Bonus d'architecture
 
-- services métier bien isolés ;
-- DTO ou objets de commande pertinents ;
-- événements métier simples ;
-- Repository clairement découplé ;
-- stratégie de transactions documentée.
+- interface de repository échangeable ;
+- tests avec une base isolée ;
+- service transactionnel pour un vrai scénario de concurrence ;
+- cache HTTP sur des ressources publiques sans donnée sensible ;
+- hypermédia/HATEOAS **si vous pouvez expliquer ce qu'un client fait des liens**, pas pour afficher `_links` décorativement.
 
-## Niveau 4 — Sécurité
+## Ce qui n'est pas un bonus
 
-- protection CSRF si nécessaire ;
-- limitation de débit sur certaines routes ;
-- journal d’audit ;
-- verrouillage ou temporisation après échecs répétés ;
-- politique de mot de passe argumentée ;
-- en-têtes HTTP de sécurité ;
-- analyse de dépendances.
+Les mots de passe hachés, la vérification des autorisations, le CSRF sur formulaires authentifiés, l'échappement HTML, la validation serveur, les requêtes paramétrées et les secrets hors dépôt sont **obligatoires**.
 
-## Niveau 5 — Produit
-
-- import/export CSV ;
-- notifications ;
-- calendrier ;
-- statistiques ;
-- génération PDF pertinente ;
-- accessibilité améliorée ;
-- internationalisation.
-
-## Règle
-
-Un bonus doit répondre à un besoin explicable. N’ajoutez pas une technologie uniquement pour pouvoir dire que vous l’avez utilisée.
+Un bon bonus doit répondre à une vraie question client ou améliorer la fiabilité observable du produit.

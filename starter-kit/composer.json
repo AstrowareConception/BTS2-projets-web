@@ -4,6 +4,8 @@
   "type": "project",
   "require": {
     "php": "^8.2",
+    "ext-mbstring": "*",
+    "ext-pdo_mysql": "*",
     "slim/slim": "^4.15",
     "slim/psr7": "^1.7",
     "catfan/medoo": "^2.6",

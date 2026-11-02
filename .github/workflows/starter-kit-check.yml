@@ -13,9 +13,37 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: rootpass
+          MYSQL_DATABASE: bts_web
+          MYSQL_USER: bts
+          MYSQL_PASSWORD: btspass
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -prootpass"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=15
+
     defaults:
       run:
         working-directory: starter-kit
+
+    env:
+      APP_ENV: test
+      APP_DEBUG: "true"
+      DB_TYPE: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_NAME: bts_web
+      DB_USER: bts
+      DB_PASSWORD: btspass
+      DB_CHARSET: utf8mb4
 
     steps:
       - name: Checkout
@@ -40,5 +68,61 @@ jobs:
           find public config routes src templates tests -name "*.php" -print0 \
             | xargs -0 -n1 php -l
 
-      - name: Tests contractuels HTTP (sans BDD)
+      - name: Tests contractuels JSON sans BDD
         run: composer test
+
+      - name: Initialiser MySQL
+        run: |
+          php -r '
+          $db = new PDO("mysql:host=127.0.0.1;dbname=bts_web;charset=utf8mb4", "bts", "btspass");
+          $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+          $db->exec(file_get_contents("database/schema.sql"));
+          $db->exec(file_get_contents("database/seed.sql"));
+          echo "Jeu SQL initialise.\n";
+          '
+
+      - name: Tester routes HTML / API avec le vrai SGBD
+        run: |
+          composer serve > /tmp/bts-starter-server.log 2>&1 &
+          for i in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8080/api/health > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          curl -fsS http://127.0.0.1:8080/ > /tmp/home.html
+          grep -q 'name="csrf"' /tmp/home.html
+
+          curl -fsS http://127.0.0.1:8080/api/equipment > /tmp/equipment.json
+          grep -q 'Imprimante 3D' /tmp/equipment.json
+
+          code=$(curl -sS -o /tmp/create.json -D /tmp/create-headers             -w '%{http_code}' -X POST http://127.0.0.1:8080/api/equipment             -H 'Content-Type: application/json'             -d '{"name":"Test CI","status":"AVAILABLE"}')
+          test "$code" = "201"
+          grep -iq '^Location: /api/equipment/' /tmp/create-headers
+
+          for expected_case in invalid_json invalid_type invalid_name; do
+            case "$expected_case" in
+              invalid_json)
+                code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST                   http://127.0.0.1:8080/api/equipment                   -H 'Content-Type: application/json' -d '{"name":}') ;;
+              invalid_type)
+                code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST                   http://127.0.0.1:8080/api/equipment                   -H 'Content-Type: text/plain' -d 'invalid') ;;
+              invalid_name)
+                code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST                   http://127.0.0.1:8080/api/equipment                   -H 'Content-Type: application/json' -d '{"name":" "}') ;;
+            esac
+            case "$expected_case" in
+              invalid_json) test "$code" = "400" ;;
+              invalid_type) test "$code" = "415" ;;
+              invalid_name) test "$code" = "422" ;;
+            esac
+          done
+
+          code=$(curl -sS -o /dev/null -w '%{http_code}'             http://127.0.0.1:8080/api/equipment/99999)
+          test "$code" = "404"
+
+          code=$(curl -sS -o /dev/null -w '%{http_code}'             -X POST http://127.0.0.1:8080/equipment -d 'name=test')
+          test "$code" = "403"
+
+      - name: Logs en cas d'échec
+        if: failure()
+        run: cat /tmp/bts-starter-server.log || true

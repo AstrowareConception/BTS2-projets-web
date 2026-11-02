@@ -1,144 +1,77 @@
-# 01 — Cadre technique commun
+# 01 — Cadre technique commun : une RP Web maîtrisée
 
-Les trois sujets utilisent le même cadre afin que l’évaluation porte sur la qualité de votre démarche et non sur la technologie choisie.
+Trois sujets, **un même cadre d'apprentissage**, mais six réalisations individuelles réellement personnalisées.
 
-## Stack attendue
+## Stack
 
-- PHP 8.2+
-- Composer
-- Slim 4
-- architecture MVC
-- Medoo pour l’accès aux données (au-dessus de PDO)
-- MySQL ou MariaDB
-- HTML / CSS ; framework CSS autorisé
-- JavaScript autorisé mais non requis
-- Git + dépôt distant
-- API REST en JSON
-- environnement de développement local reproductible
+- PHP 8.2+, Composer et autoload PSR-4 ;
+- Slim 4 pour routes, objets HTTP PSR-7 et middlewares ;
+- architecture MVC et, lorsque nécessaire, service métier et repository ;
+- MySQL/MariaDB et **PDO/Medoo** (Medoo est un composant léger **au-dessus de PDO**, pas un framework MVC) ;
+- HTML/CSS et formulaires ; JavaScript facultatif ;
+- petite API JSON indépendante des vues HTML ;
+- Git, tickets, tests, documentation et livraison.
 
-## Starter Kit
+**Aucun framework frontend JavaScript n'est imposé.** Ne commencez pas React/Vue pour la première fois pendant cette semaine.
 
-Un [Starter Kit Slim + Medoo](../starter-kit/README.md) est fourni.
+## Les dix exigences fonctionnelles du socle
 
-Il est là pour :
-- gagner du temps sur l’initialisation ;
-- montrer une organisation possible ;
-- donner un exemple de routes Web et API ;
-- montrer la circulation entre contrôleur, service et repository ;
-- fournir un exemple concret d’utilisation de Medoo ;
-- fournir une configuration `.env`.
+1. Une partie publique **utile** à l'organisation cliente, pas un simple écran de bienvenue.
+2. Une authentification réelle par compte, avec session et déconnexion.
+3. Trois rôles aux capacités distinctes, appliquées **côté serveur**.
+4. Un tableau de bord correspondant à une décision du métier.
+5. Des entités relationnelles et un schéma de base cohérent.
+6. Au moins une vraie relation N–N lorsque justifiée.
+7. Un parcours métier complet, de l'action à sa persistance.
+8. Une recherche ou un filtre utile et un état « aucun résultat ».
+9. Une petite API de liste/détail/écriture partageant les règles du site.
+10. Une trace métier pertinente (incident, affectation, changement de statut...).
 
-Il n’est **pas** là pour faire le projet à votre place.
+## Trois règles choisies et réellement exécutées
 
-Vous devez adapter :
-- les entités ;
-- le modèle de données ;
-- les règles métier ;
-- les services ;
-- les contrôleurs ;
-- les routes ;
-- les vues ;
-- la sécurité.
+Les 10 règles de chaque fiche sont des **options de personnalisation**, pas 10 développements obligatoires. Seules les **3 contractuelles** doivent toutes être terminées ; les 3 extensions définissent le backlog supplémentaire. L'évolution du jeudi matin est un ticket distinct de taille contrôlée.
 
-## Architecture minimale
-
-Vous devez séparer clairement :
-
-- routes ;
-- contrôleurs ;
-- services métier lorsque la logique le justifie ;
-- accès aux données ;
-- vues ;
-- configuration.
-
-Exemple indicatif :
+## Les responsabilités
 
 ```text
-src/
-  Controller/
-  Service/
-  Repository/
-  Model/
-templates/
-public/
-config/
-tests/
-docs/
+Entrée HTTP
+    ↓
+Route Slim / Controller
+    ↓
+Modèle et Service métier (invariants, décisions)
+    ↓
+Repository (Medoo/PDO)
+    ↓
+Base SQL
+
+Vue PHP = HTML échappé
+API = contrat JSON et statuts HTTP cohérents
 ```
 
-Cette arborescence peut être adaptée, mais vous devez être capable de justifier vos choix.
+Une règle importante s'applique aussi bien si l'utilisateur passe par un formulaire HTML que si un client appelle l'API. Les vues ne font ni SQL ni décisions de droit.
 
-## Principe de séparation
+## Données et qualité
 
-```text
-HTTP
- ↓
-Slim / routes
- ↓
-Controller
- ↓
-Service métier
- ↓
-Repository
- ↓
-Medoo
- ↓
-BDD
-```
+Préparez un MCD/MLD, des PK/FK, des contraintes, des requêtes paramétrées et un jeu de test. Utilisez jointures, agrégats ou transactions quand le besoin métier les justifie. Une base de **6 à 10 tables utiles** est une taille raisonnable, pas un quota.
 
-Une règle métier importante ne doit pas exister uniquement dans un formulaire ou dans une route. Elle doit être réutilisable depuis :
-- l’interface Web ;
-- l’API ;
-- potentiellement plus tard un client JavaFX.
+La sauvegarde/restauration, le contrôle des droits, le CSRF des formulaires authentifiés, le hachage des mots de passe, la validation et la non-régression sont des **exigences de qualité**.
 
-## Exigences fonctionnelles communes
+## Le starter
 
-Toutes les réalisations doivent comporter :
+Le [starter](../starter-kit/README.md) montre une version volontairement réduite, avec un exemple d'accès SQL et deux représentations HTTP. Il **ne gère pas l'authentification réelle**, donc il n'est pas livrable en l'état.
 
-1. une partie publique utile ;
-2. une authentification ;
-3. au moins trois niveaux ou profils d’accès réellement différenciés ;
-4. un tableau de bord authentifié ;
-5. plusieurs entités liées en base ;
-6. au moins une relation plusieurs-à-plusieurs ;
-7. des règles métier non triviales ;
-8. une recherche ou un filtrage utile ;
-9. une API REST ;
-10. un historique ou une traçabilité sur une partie pertinente du métier.
+## Les cours
 
-## Données
-
-La base doit comporter suffisamment de richesse pour démontrer :
-
-- clés primaires et étrangères ;
-- contraintes ;
-- relations ;
-- jointures ;
-- agrégations ;
-- requêtes métier ;
-- index lorsque justifié ;
-- sauvegarde et restauration.
-
-Le nombre de tables n’est pas un objectif. **Une base cohérente de 6 à 10 tables utiles vaut mieux qu’une base de 25 tables artificielles.**
-
-## Documentation technique disponible
-
-Pendant la semaine, utilisez en priorité :
-
-- [Slim pratique](17-slim-pratique.md)
-- [Medoo pratique](18-medoo-pratique.md)
-- [Slim + Medoo](19-slim-medoo-ensemble.md)
-- [Recettes de code](20-recettes-code.md)
-- [Ressources externes](21-ressources-externes.md)
-- [Dépannage](22-depannage-technique.md)
+Le dossier [24 — ponts avec les cours](24-ponts-avec-les-cours.md) relie chaque brique à des pages précises des quatre supports fournis.
 
 ## Ce qui est interdit
 
-- application réduite à une suite de CRUD sans logique métier ;
-- copier intégralement le projet d’un autre étudiant ;
-- copier le starter sans savoir expliquer son architecture ;
-- remplacer la conception par du code généré sans compréhension ;
-- stocker des mots de passe en clair ;
-- committer des secrets ;
-- désactiver les contrôles de sécurité pour « faire marcher » l’application ;
-- attendre vendredi pour pousser le code.
+- code uniquement CRUD sans parcours métier ;
+- règles seulement écrites dans JavaScript/HTML ;
+- fausse authentification par bouton ;
+- secrets dans Git ;
+- données personnelles réelles dans les seeds ;
+- suppression sensible par GET ;
+- API disant toujours 200 ;
+- production du vendredi sans tests ni documentation ;
+- copier le travail d'un camarade ou un générateur sans pouvoir l'expliquer.

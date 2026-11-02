@@ -4,6 +4,8 @@
   "type": "project",
   "require": {
     "php": "^8.2",
+    "ext-mbstring": "*",
+    "ext-pdo_mysql": "*",
     "slim/slim": "^4.15",
     "slim/psr7": "^1.7",
     "catfan/medoo": "^2.6",
@@ -15,6 +17,7 @@
     }
   },
   "scripts": {
-    "serve": "php -S 127.0.0.1:8080 -t public public/router.php"
+    "serve": "php -S 127.0.0.1:8080 -t public public/router.php",
+    "test": "php tests/http-input.php"
   }
 }

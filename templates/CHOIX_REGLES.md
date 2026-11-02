@@ -1,31 +1,44 @@
-# Choix des règles métier
+# Réservation de la personnalisation
 
 **Étudiant :**  
-**Sujet :**  
-**Date de validation :**
+**Projet :** Backstage / RepairLab / EscapeOps  
+**Date :**  
+**Validation enseignant :**
 
-## Règles contractuelles
+## 3 règles contractuelles à livrer
 
-| Règle | Famille | Pourquoi ce choix ? | Multi-entités ? |
-|---|---|---|---|
-| R? | | | |
-| R? | | | |
-| R? | | | |
+| ID | Famille | Difficulté | Entités concernées | Démo / cas de refus |
+|---|---|---|---|---|
+| | | | | |
+| | | | | |
+| | | | | |
 
-**Combinaison réservée :** `R? + R? + R?`
+**Triplet trié (sans ordre) :** `... + ... + ...`
 
-## Règles d’extension
+## 3 extensions réservées
 
-| Règle | Priorité | Pourquoi ? |
-|---|---:|---|
-| R? | 1 | |
-| R? | 2 | |
-| R? | 3 | |
+| Priorité | ID | Intérêt pour le client | Quand l'envisager ? |
+|---:|---|---|---|
+| 1 | | | après socle et 3 contractuelles |
+| 2 | | | si temps restant |
+| 3 | | | piste d'évolution |
 
-## Vérifications
+## Mon scénario de démonstration en une phrase
 
-- [ ] combinaison contractuelle unique
-- [ ] au moins deux familles
-- [ ] au moins une règle multi-entités
-- [ ] aucune règle choisie uniquement parce qu’elle semble facile
-- [ ] validation enseignant
+> « Vendredi, je montrerai à un [acteur] qui tente [action], et l'application [accepte/refuse/calcul] parce que [règle]. »
+
+## Mon risque technique le plus important
+
+> ...
+
+## Vérifications avant validation
+
+- [ ] même triplet interdit pour les étudiants ayant le même sujet ;
+- [ ] deux familles différentes ou plus ;
+- [ ] au moins une règle multi-entités ;
+- [ ] au moins une règle intermédiaire ou avancée ;
+- [ ] trois règles réellement démontrables, et non trois champs `required` ;
+- [ ] extensions séparées de l'engagement contractuel ;
+- [ ] date et validation enseignant.
+
+Copiez la [fiche de règle métier](FICHE_REGLE_METIER.md) pour documenter les règles contractuelles.

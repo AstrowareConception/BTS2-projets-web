@@ -1,180 +1,138 @@
-# Sujet 3 — EscapeOps
+# ESCAPEOPS — Un escape game, trente minutes avant l'ouverture
 
-## Contexte
+**Client fictif :** « Les Archives Obscures », petite société exploitant trois salles d'escape game.  
+**Mission :** vendre une expérience fluide aux visiteurs **sans développer de paiement**, et donner à l'équipe un véritable poste de conduite des sessions.  
+**Promesse :** « Personne ne réserve une salle indisponible ; l'équipe sait pourquoi une session peut ou non démarrer. »
 
-**EscapeOps** exploite plusieurs salles d’escape game. Chaque salle possède une capacité, un ensemble d’équipements et des contraintes de préparation. L’entreprise organise des sessions, prend des réservations et doit réagir rapidement lorsqu’un équipement tombe en panne ou lorsqu’une salle n’est pas prête.
+## La situation
 
-L’application doit proposer une **présentation publique des salles** et un **outil interne de gestion des sessions, réservations, équipements et incidents**.
+Un groupe de six joueurs arrive à 18 h. La salle « Le Cabinet des Ombres » a besoin de vingt minutes de remise en état, un mécanisme de porte a un défaut, et le game master prévu doit également animer une autre salle. Le responsable n'a pas le temps de recouper les messages du personnel.
 
-## Utilisateurs
+Vous créez un outil professionnel **de planning et d'exploitation**. Son habillage peut être immersif et élégant ; ses règles doivent rester de vraies décisions d'exploitation.
 
-### Visiteur / client
-- consulter les salles ;
-- consulter les créneaux disponibles ;
-- effectuer ou préparer une réservation selon le périmètre retenu.
+## Concept de réservation — à ne pas confondre
 
-### Game master
-- consulter ses sessions ;
-- réaliser la préparation ;
-- signaler un incident ;
-- mettre à jour le déroulement d’une session.
+**Une session représente un créneau privatisé pour un groupe entier**, pas un siège individuel. Une session accepte donc **une réservation confirmée au maximum**, contenant le nombre de joueurs du groupe. Cela rend compatibles la règle E1 et la capacité E3.
 
-### Responsable
-- gérer salles, sessions, équipements et incidents ;
-- suivre les disponibilités.
+**Hors périmètre :** paiement, billetterie multi-groupes par session, envoi de SMS, serrures connectées, logiciel de création des énigmes, moteur de jeu 3D.
 
-### Administrateur
-- gérer utilisateurs, rôles et paramètres.
+## Socle obligatoire
 
-## Entités suggérées
+- Vitrine publique présentant les salles, leur thème, durée, capacité et créneaux publiés.
+- Connexion/déconnexion et rôles **administrateur / responsable / game master** (un client public peut réserver sans compte avec contact fictif, si sa gestion est justifiée).
+- Salles, sessions horaires, réservations de groupes, fiches game master, équipements liés à une salle, incidents et recherche.
+- Session avec états simples `PREVUE`, `PRETE`, `EN_COURS`, `TERMINEE`, `ANNULEE`. Une réservation porte `CONFIRMEE` ou `ANNULEE`.
+- Tableau de bord de l'exploitation : prochaines sessions, incidents ouverts, disponibilité.
+- Au moins une relation N–N utile (salle ↔ équipement via table d'affectation, ou session ↔ intervenant).
+- API JSON permettant liste/détail et création d'un incident ou réservation.
 
-- User
-- Role
-- Room
-- Session
-- Booking
-- GameMasterAssignment
-- Equipment
-- RoomEquipment
-- Incident
-- ReadinessCheck
+**Invariants non sélectionnables :** fin après début ; impossible de réserver une session supprimée, passée ou déjà confirmée ; l'utilisateur ne peut modifier une session sans droit. Ces garde-fous forment le socle.
 
-## Fonctionnalités du socle
+## Les 10 règles métier
 
-- vitrine publique ;
-- authentification ;
-- rôles ;
-- salles ;
-- créneaux/sessions ;
-- réservations ;
-- équipements ;
-- incidents ;
-- tableau de bord ;
-- API REST.
+### E1 — « Une option pendant quinze minutes »
+**Famille : réservation / temps · Difficulté : intermédiaire.**
 
-# Les 10 règles métier candidates
+Lorsqu'un client sélectionne un créneau libre, il peut poser une **option non payante de 15 minutes** (`EN_ATTENTE`). Tant que cette option est valide, le créneau est temporairement indisponible aux autres groupes ; après expiration, il est à nouveau réservable. Une confirmation après expiration est refusée. Le délai est vérifié **à chaque demande HTTP** : aucun cron n'est requis.
 
-## E1 — Pas de double réservation
-**Famille : temporalité / intégrité — multi-entités**
+**Démo :** groupe A pose une option, groupe B est refusé ; quinze minutes plus tard, le groupe B peut réserver.  
+**Tests :** option active bloquante ; option expirée libératrice ; confirmation hors délai refusée.
 
-Une session ne peut recevoir qu’une réservation confirmée. Une réservation concurrente sur la même session doit être refusée.
+### E2 — « Le mécanisme critique est hors service »
+**Famille : incident / disponibilité · Difficulté : intermédiaire.**
 
-**Acceptation :**
-- vérification côté serveur ;
-- statut des réservations pris en compte ;
-- conflit signalé clairement.
+Un incident bloquant sur un **équipement critique** empêche les nouvelles réservations de sessions de la salle. Les réservations déjà confirmées sont signalées « à recontacter », pas effacées.
 
-## E2 — Équipement critique et fermeture de salle
-**Famille : workflow — multi-entités**
+**Démo :** énigme de la porte verrouillée en panne ; nouvelles réservations refusées.  
+**Tests :** équipement non critique sans blocage ; critique bloquant ; résolution.
 
-Si un équipement critique d’une salle possède un incident bloquant, la salle devient indisponible et aucune nouvelle session ne peut être ouverte à la réservation.
+### E3 — « Groupe de deux à six aventuriers »
+**Famille : capacité / calcul · Difficulté : accessible.**
 
-**Acceptation :**
-- conséquence automatique ;
-- raison d’indisponibilité visible ;
-- retour à la normale contrôlé.
+Chaque salle définit une taille minimale et maximale du groupe. La réservation est refusée hors de cette fourchette, y compris à la modification.
 
-## E3 — Capacité du groupe
-**Famille : calcul / intégrité — multi-entités**
+**Démo :** groupe de 7 pour une salle limitée à 6.  
+**Tests :** bornes inclusives ; dépassement ; édition.
 
-Le nombre de joueurs doit respecter le minimum et le maximum définis pour la salle.
+### E4 — « Vingt minutes entre deux missions »
+**Famille : planning / temporalité · Difficulté : intermédiaire.**
 
-**Acceptation :**
-- contrôle à la réservation ;
-- limites affichées ;
-- modification ultérieure également contrôlée.
+Deux sessions **de la même salle** doivent respecter le temps de remise en état paramétré sur celle-ci. Ce contrôle vaut pour création et modification de session.
 
-## E4 — Temps de remise en état
-**Famille : temporalité — multi-entités**
+**Démo :** nouvelle session 10 minutes après la précédente : refus ; 20 minutes : accord.  
+**Tests :** limite exacte ; chevauchement ; autre salle acceptée.
 
-Deux sessions d’une même salle doivent respecter un délai minimal de remise en état configurable.
+### E5 — « Un game master ne peut pas se dédoubler »
+**Famille : personnel / temps · Difficulté : intermédiaire.**
 
-**Acceptation :**
-- création/modification de session contrôlée ;
-- calcul exact entre heure de fin et prochaine heure de début.
+Lorsqu'un game master est affecté à une session, aucune autre session sur un créneau chevauchant ne peut lui être affectée. Une session peut rester planifiée sans affectation mais ne peut démarrer sans game master.
 
-## E5 — Affectation du game master
-**Famille : ressource / temporalité — multi-entités**
+**Démo :** même personne affectée aux deux salles à 18 h.  
+**Tests :** conflits ; créneaux jointifs ; refus au démarrage sans affectation.
 
-Un game master ne peut pas superviser deux sessions simultanées et doit être affecté avant qu’une session passe à l’état `READY`.
+### E6 — « Partie interrompue »
+**Famille : incident / workflow · Difficulté : intermédiaire.**
 
-**Acceptation :**
-- détection de conflit ;
-- session non prête sans game master.
+Un incident critique créé pendant une session `EN_COURS` passe celle-ci à `INTERROMPUE`. La reprise nécessite une action explicite du responsable et laisse une trace. Pas de déclencheur matériel réel.
 
-## E6 — Incident en cours de session
-**Famille : workflow / automatisation — multi-entités**
+**Démo :** le game master déclare un problème de sécurité ; la session se bloque.  
+**Tests :** interruption ; reprise autorisée ; historique.
 
-Un incident critique déclaré pendant une session place celle-ci en état `INTERRUPTED` et signale les sessions suivantes potentiellement impactées.
+### E7 — « Annuler au bon moment »
+**Famille : temps / politique commerciale · Difficulté : accessible.**
 
-**Acceptation :**
-- changement d’état ;
-- liste des sessions impactées ;
-- historique conservé.
+Une annulation est classée `SANS_FRAIS` si elle intervient **au moins 24 heures avant** le début, et `TARDIVE` sinon. **Aucun paiement n'est traité** : le statut informe le responsable et le client.
 
-## E7 — Politique d’annulation
-**Famille : temporalité / calcul — multi-entités**
+**Démo :** annulation à 26 h puis à 2 h.  
+**Tests :** frontière 24 h ; avant/après ; statut conservé.
 
-Une réservation annulée suffisamment tôt est marquée `CANCELLED_FREE`; au-delà d’un délai paramétré, elle devient `CANCELLED_LATE`.
+### E8 — « Les joueurs ne sont pas venus »
+**Famille : accueil / temps · Difficulté : intermédiaire.**
 
-**Acceptation :**
-- règle fondée sur date/heure ;
-- seuil documenté ;
-- statut calculé de façon cohérente.
+Le responsable ou game master peut marquer une réservation `ABSENT` seulement **15 minutes après le début de session** si aucun check-in n'a été validé. L'opération est manuelle et tracée : aucun traitement planifié n'est exigé.
 
-## E8 — No-show
-**Famille : workflow / temporalité — multi-entités**
+**Démo :** « absent » impossible à H+5, possible à H+15.  
+**Tests :** délai ; joueur enregistré ; habilitation.
 
-Après un délai défini suivant le début de session, une réservation confirmée non enregistrée à l’accueil peut passer à l’état `NO_SHOW`.
+### E9 — « Maintenance préventive après dix parties »
+**Famille : historique / seuil · Difficulté : intermédiaire.**
 
-**Acceptation :**
-- transition impossible avant le délai ;
-- action tracée.
+Chaque salle affiche `CONTROLE_A_PREVOIR` après **10 sessions terminées** depuis le dernier contrôle documenté. Le responsable peut enregistrer le contrôle, ce qui redémarre le compteur.
 
-## E9 — Maintenance préventive
-**Famille : agrégation / automatisation — multi-entités**
+**Démo :** dixième session terminée : badge de maintenance.  
+**Tests :** 9/10 ; contrôle remettant compteur à zéro ; sessions annulées ignorées.
 
-Après N sessions terminées depuis la dernière maintenance, la salle ou un équipement défini passe en état `MAINTENANCE_DUE`.
+### E10 — « Checklist avant ouverture »
+**Famille : qualité / workflow · Difficulté : intermédiaire.**
 
-**Acceptation :**
-- compteur fondé sur l’historique ;
-- remise à zéro après maintenance validée ;
-- avertissement visible.
+Avant le passage d'une session à `PRETE`, un game master doit valider les trois points standards : **salle rangée, matériel testé, consignes sécurité vérifiées**. Le nom, la date et les valeurs restent enregistrés. Cette règle n'exige pas E5.
 
-## E10 — Checklist de préparation
-**Famille : qualité / workflow — multi-entités**
+**Démo :** 2/3 points = « non prête » ; 3/3 = prête.  
+**Tests :** incomplet/refus ; complet/succès ; contrôle serveur.
 
-Une session ne peut passer à `READY` que si les points obligatoires de sa checklist sont validés, aucun incident bloquant n’est ouvert et le game master est affecté.
+## Scénario de recette à raconter
 
-**Acceptation :**
-- checklist configurable ou structurée ;
-- refus détaillant les éléments manquants ;
-- validation horodatée.
+Un responsable crée les sessions du jour, le public réserve un créneau, un game master prépare la salle, un incident imprévu modifie l'exploitation. La logique diffère selon les trois règles contractuelles choisies ; toute la chaîne doit être démontrable.
 
-## Exemples d’API
+## Données minimales
+
+3 salles, 2 game masters, 1 responsable, 1 administrateur, 8 sessions dont 2 dans la même salle, 4 réservations de groupes fictifs, 5 équipements (dont un critique), 2 incidents. Préparez les états nécessaires à vos règles.
+
+## Contrat API possible
 
 ```http
-GET /api/rooms
-GET /api/rooms/{id}/availability
-GET /api/sessions
+GET  /api/rooms
+GET  /api/rooms/{id}
+GET  /api/sessions?roomId=1
 POST /api/incidents
 ```
 
-## Pistes de maquette
+## Maquettes
 
-- vitrine des salles ;
-- calendrier des sessions ;
-- réservation ;
-- tableau de bord d’exploitation ;
-- fiche session ;
-- checklist ;
-- centre d’incidents.
+Vitrine immersive, fiche salle, créneaux, réservation groupe, cockpit du responsable « prochaines sessions », fiche session, saisie incident, message de conflit. Le visuel peut être captivant, mais **les droits, heures et états doivent être fiables**.
 
-## Bonus spécifiques
+## Bonus
 
-- planning calendrier ;
-- tableau d’occupation des salles ;
-- indicateurs de taux de remplissage ;
-- QR code de check-in ;
-- journal technique des équipements ;
-- écran « mode exploitation » optimisé tablette.
+Planning calendrier, écran « régie » sur tablette, QR code de check-in, taux d'occupation, historique de maintenance. Pas d'intégration matérielle dangereuse.
+
+**Argument de soutenance :** conception d'une solution applicative de réservation et d'exploitation, règles temporelles, sécurité, API, tests et maintenance.

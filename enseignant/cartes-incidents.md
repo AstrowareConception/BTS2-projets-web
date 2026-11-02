@@ -1,63 +1,51 @@
-# Cartes incident — Jeudi
+# Cartes d'incident — jeudi, sur une fonctionnalité réelle
 
-Choisir un incident cohérent avec l’état réel de l’application. L’objectif est le diagnostic, pas le piège artificiel.
+**Méthode :** choisir une carte compatible avec les fonctionnalités **effectivement présentes**. Une carte décrit un **scénario de reproduction à vérifier**, pas une affirmation que le bug existe forcément. Si le comportement est déjà correct, le faire prouver et choisir un autre cas pertinent. Aucun sabotage opaque ni injection artificielle en production.
 
 ## Backstage
 
-### INC-B1 — Double affectation
-Un bénévole peut être affecté à deux activités qui se chevauchent après modification d’une affectation existante.
+**INC-B1 — Deux affectations après édition.** Un bénévolat ne peut être doublé à la création, mais qu'en est-il après modification d'horaires ? *(seulement si B1 est réalisée)*
 
-### INC-B2 — Autorisation
-Un bénévole connecté peut ouvrir directement l’URL d’édition d’une activité.
+**INC-B2 — Accès par URL directe.** Un bénévole tente d'ouvrir l'écran d'administration d'une activité par URL copiée. **À tester quel que soit le choix de règles.**
 
-### INC-B3 — Matériel
-Le stock disponible est correctement contrôlé à la création d’une affectation mais pas lors de sa modification.
+**INC-B3 — JSON d'une activité absente.** `GET /api/activities/99999` renvoie-t-il 404 ou un faux 200 ? **À tester si cette route existe.**
 
-### INC-B4 — Incident critique
-La résolution d’un incident critique remet automatiquement l’activité en `READY` alors que son équipe minimale n’est pas complète.
+**INC-B4 — Incident critique résolu.** Le tableau de bord conserve-t-il un indicateur d'alerte obsolète ? *(si B4 ou B7 est réalisée)*
 
-### INC-B5 — Publication
-Un événement sans activité publiée reste accessible via son URL publique.
-
-### INC-B6 — API
-L’API renvoie `200` avec un objet vide pour un identifiant inexistant au lieu d’une erreur explicite.
+**INC-B5 — Activité non publiée.** La vitrine révèle-t-elle une activité en brouillon via URL directe ? **Contrôle du socle.**
 
 ## RepairLab
 
-### INC-R1 — Conflit après modification
-La création empêche deux réservations concurrentes, mais modifier une réservation permet un chevauchement.
+**INC-R1 — Édition de réservation.** Le contrôle de conflit est-il effectué autant à la modification qu'à la création ? **Contrôle du socle.**
 
-### INC-R2 — Habilitation expirée
-Une qualification expirée est encore acceptée.
+**INC-R2 — Qualification expirée.** Une qualification ancienne passe-t-elle encore ? *(si R2 est réalisée)*
 
-### INC-R3 — Incident résolu
-Un équipement reste bloqué après la résolution valide du dernier incident critique.
+**INC-R3 — Panne critique.** Un incident bloquant interdit-il réellement une réservation depuis une route directe et pas seulement l'interface ? *(si R3 est réalisée)*
 
-### INC-R4 — Stock
-Deux interventions successives permettent de rendre le stock négatif dans un cas limite.
+**INC-R4 — Pièces consommées.** Une tentative de consommation supérieure au stock laisse-t-elle une écriture partielle ? *(si R7 est réalisée)*
 
-### INC-R5 — Autorisation
-Un adhérent peut consulter le détail d’une intervention technique via une URL directe.
-
-### INC-R6 — API
-Une réservation invalide provoque une erreur serveur au lieu d’un `4xx` documenté.
+**INC-R5 — Dossier technique privé.** Un adhérent consulte-t-il une intervention réservée au technicien via URL directe ? **Contrôle du socle.**
 
 ## EscapeOps
 
-### INC-E1 — Chevauchement de sessions
-La création respecte le temps de remise en état, mais pas l’édition.
+**INC-E1 — Option expirée.** Une option de réservation déjà expirée peut-elle encore être confirmée par requête directe ? *(si E1 est réalisée)*
 
-### INC-E2 — Salle critique
-Une session déjà ouverte à la réservation reste réservable après incident critique.
+**INC-E2 — Groupe de taille incorrecte.** Le formulaire rejette 7 joueurs, mais l'API ou une modification ultérieure l'accepte-t-elle ? *(si E3 est réalisée)*
 
-### INC-E3 — Capacité
-La capacité est contrôlée à la création mais une modification ultérieure accepte trop de joueurs.
+**INC-E3 — Jeu de rôles.** Un game master peut-il créer/supprimer une salle en modifiant l'URL ? **Contrôle du socle.**
 
-### INC-E4 — Game master
-Un game master peut être affecté à deux sessions simultanées depuis l’écran d’édition.
+**INC-E4 — Session indisponible.** Une réservation est-elle acceptée sur une session annulée ou passée ? **Contrôle du socle.**
 
-### INC-E5 — Checklist
-Une session passe à `READY` si les cases obligatoires existent mais ne sont pas toutes validées.
+**INC-E5 — Décalage de préparation.** L'édition de session contourne-t-elle le délai entre deux sessions ? *(si E4 est réalisée)*
 
-### INC-E6 — API
-Une salle indisponible est annoncée disponible par un endpoint d’API à cause d’une logique dupliquée.
+## Éléments à exiger
+
+- reproduction ;
+- observation : méthode, URL, statut, corps, logs ;
+- cause identifiée ;
+- correction ;
+- test ajouté ;
+- résultat après correction ;
+- issue et commit.
+
+Le choix d'un incident qui n'existe pas ou n'est pas reproductible ne constitue **pas** un échec de l'étudiant : il faut adapter le scénario.

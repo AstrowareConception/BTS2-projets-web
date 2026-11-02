@@ -24,6 +24,7 @@ final class JsonResponder
 
         return $response
             ->withHeader('Content-Type', 'application/json; charset=utf-8')
+            ->withHeader('Cache-Control', 'no-store')
             ->withStatus($status);
     }
 }

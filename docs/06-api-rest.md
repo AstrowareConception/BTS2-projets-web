@@ -1,60 +1,48 @@
-# 06 — API REST
+# 06 — Votre API JSON Slim 4 : un contrat, pas du SQL publié
 
-Chaque projet expose une petite API JSON. L’objectif est de préparer de vrais échanges inter-applicatifs et de permettre une réutilisation ultérieure, notamment depuis une application Java.
+Votre site produit du HTML pour les utilisateurs. Il expose également une **petite interface JSON** pour un client indépendant (curl, script, puis éventuellement un client Java). Le **modèle métier et les repositories sont partagés**.
 
-## Minimum commun
+## Le minimum démontrable
 
-Au moins :
+- `GET /api/... ` : collection, 200 et un **tableau**, même vide ;
+- `GET /api/.../{id}` : ressource, 200 ou 404 ;
+- `POST /api/...` : création métier, 201 + `Location` + JSON ;
+- une documentation des méthodes, entrées, sorties, droits et erreurs ;
+- un test par endpoint, dont au moins un cas d'échec.
 
-- une collection en lecture ;
-- une ressource en lecture ;
-- une création ou action métier ;
-- gestion des erreurs ;
-- codes HTTP cohérents ;
-- JSON valide.
+Exemples : activités d'un festival, machines d'un FabLab, sessions d'escape game. **L'API ne doit pas contourner la validation et les droits du site HTML.**
 
-Exemple générique :
+## HTTP : distinguer les situations
 
-```http
-GET /api/resources
-GET /api/resources/{id}
-POST /api/incidents
-```
+| Situation | Réponse |
+|---|---|
+| Corps JSON mal formé ou structure impossible à interpréter | **400** |
+| `Content-Type` non pris en charge | **415** |
+| Entrée compréhensible mais invalide selon le contrat/métier | **422** |
+| Ressource absente | **404** |
+| Non authentifié / non autorisé | **401 / 403** |
+| Conflit de réservation ou capacité | **409** si votre contrat le prévoit |
+| Création valide | **201 + Location** |
+| Formulaire HTML POST réussi | **303 → GET** |
 
-## Attendus
+Ne retournez pas systématiquement 200, et n'affichez jamais une erreur SQL brute.
 
-### Codes HTTP
-Utilisez notamment :
-- `200` succès ;
-- `201` création ;
-- `400` requête invalide ;
-- `401` non authentifié ;
-- `403` interdit ;
-- `404` absent ;
-- `409` conflit lorsque pertinent ;
-- `422` données non acceptables lorsque pertinent.
+## Extrait de contrat à produire
 
-### Réponses d’erreur
+| Méthode | URI | Auth | Corps | Succès | Erreurs |
+|---|---|---|---|---|---|
+| GET | /api/equipment | selon données | — | 200 + [] | 401/403 |
+| GET | /api/equipment/{id} | selon données | — | 200 + objet | 404 |
+| POST | /api/incidents | rôle autorisé | JSON | 201 + Location | 400/415/422/403 |
 
-Évitez les pages HTML d’erreur dans l’API.
+## Niveau REST visé
 
-```json
-{
-  "error": "SLOT_UNAVAILABLE",
-  "message": "Le créneau demandé n'est plus disponible."
-}
-```
+**Richardson niveau 2** comme cible pédagogique : ressources identifiées, méthodes et statuts cohérents. L'hypermédia/HATEOAS constitue une étude ou un bonus ; son absence ne rend pas votre travail inutile.
 
-### Documentation
+REST comporte d'autres contraintes (dont stateless). Si votre API dépend de la session PHP serveur pour reconnaître le client, ne prétendez pas à une conformité stricte à toutes les contraintes REST : **décrivez honnêtement l'architecture utilisée**.
 
-Ajoutez `docs/api.md` avec :
-- endpoints ;
-- paramètres ;
-- exemples de requête ;
-- exemples de réponse ;
-- erreurs possibles ;
-- authentification éventuelle.
+## Tests
 
-## Bonus
+Testez avec `curl -i`, Bruno, Postman ou un script, en montrant **en-têtes, statut et corps** ; un JSON lisible ne suffit pas.
 
-Un contrat OpenAPI propre est un bonus, mais seulement si l’API de base est correcte.
+Pour un contrat OpenAPI plus complet, utilisez [les ressources](21-ressources-externes.md). OpenAPI reste un bonus.

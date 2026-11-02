@@ -1,6 +1,7 @@
 <?php
 /** @var array $equipment */
 /** @var ?string $error */
+/** @var string $csrf */
 ?>
 <!doctype html>
 <html lang="fr">
@@ -32,19 +33,24 @@
     Cette page illustre une vue HTML alimentée par
     <code>Route → Controller → Service → Repository → Medoo</code>.
 </p>
+<p><strong>Exemple de formation :</strong> aucune authentification n'est implémentée.
+    N'exposez pas le POST public de cette démonstration sur Internet.</p>
 
 <?php if ($error !== null): ?>
-    <p class="error">
-        <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+    <p class="error" role="alert">
+        <?= htmlspecialchars($error, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>
     </p>
 <?php endif; ?>
 
 <h2>Ajouter un équipement</h2>
 
 <form method="post" action="/equipment">
+    <input type="hidden" name="csrf"
+           value="<?= htmlspecialchars($csrf, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
+
     <label>
         Nom
-        <input name="name" required>
+        <input name="name" required maxlength="150">
     </label>
 
     <label>
@@ -62,21 +68,14 @@
 <h2>Équipements</h2>
 
 <table>
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Nom</th>
-        <th>Statut</th>
-        <th>Créé le</th>
-    </tr>
-    </thead>
+    <thead><tr><th>ID</th><th>Nom</th><th>Statut</th><th>Créé le</th></tr></thead>
     <tbody>
     <?php foreach ($equipment as $item): ?>
         <tr>
             <td><?= (int) $item['id'] ?></td>
-            <td><?= htmlspecialchars((string) $item['name'], ENT_QUOTES, 'UTF-8') ?></td>
-            <td><?= htmlspecialchars((string) $item['status'], ENT_QUOTES, 'UTF-8') ?></td>
-            <td><?= htmlspecialchars((string) $item['created_at'], ENT_QUOTES, 'UTF-8') ?></td>
+            <td><?= htmlspecialchars((string) $item['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></td>
+            <td><?= htmlspecialchars((string) $item['status'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></td>
+            <td><?= htmlspecialchars((string) $item['created_at'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></td>
         </tr>
     <?php endforeach; ?>
     </tbody>

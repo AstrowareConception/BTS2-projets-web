@@ -1,58 +1,54 @@
-# 13 — Checklist finale
+# 13 — Checklist de fin de semaine
 
-## Besoin & conception
-- [ ] sujet choisi et validé
-- [ ] combinaison contractuelle unique
-- [ ] 3 règles contractuelles
-- [ ] 3 extensions
-- [ ] cahier des charges personnalisé
-- [ ] cas d’usage
-- [ ] modèle de données
-- [ ] maquettes
-- [ ] architecture documentée
+## Besoin et conception
+- [ ] sujet et client fictif compris
+- [ ] triplet contractuel unique, 2 familles et 1 règle intermédiaire ou avancée
+- [ ] **3 règles contractuelles** définies avec leurs scénarios
+- [ ] **3 extensions** choisies et priorisées (pas nécessairement toutes réalisées)
+- [ ] maquette validée
+- [ ] MCD/MLD, architecture, cas d'usage
+- [ ] jeu de données de démonstration
 
 ## Application
-- [ ] partie publique
-- [ ] authentification
-- [ ] rôles/habilitations
-- [ ] tableau de bord
-- [ ] cœur métier
-- [ ] 3 règles contractuelles terminées
-- [ ] au moins une extension
+- [ ] partie publique utile
+- [ ] authentification et déconnexion réelles
+- [ ] rôles et autorisations **serveur**
+- [ ] tableau de bord et parcours métier complet
+- [ ] base relationnelle, liens et contraintes
 - [ ] recherche/filtre
-- [ ] historique/traçabilité
+- [ ] 3 règles contractuelles terminées et démontrables
+- [ ] extension n°1 si le temps le permet
+- [ ] traces d'incidents ou décisions pertinentes
 
-## API
-- [ ] collection
-- [ ] ressource
-- [ ] création/action
-- [ ] erreurs JSON
-- [ ] documentation
+## Contrat API
+- [ ] GET collection : tableau JSON
+- [ ] GET détail : 200 ou 404
+- [ ] POST JSON métier : 201 + Location
+- [ ] validation 400 / 415 / 422 quand pertinente
+- [ ] documentation méthode, URL, requête, réponse, erreurs, droits
+- [ ] mêmes règles entre HTML et JSON
 
-## Qualité
-- [ ] validations serveur
-- [ ] tests des règles
-- [ ] recette
-- [ ] tests de non-régression
-- [ ] sécurité vérifiée
-- [ ] logs utiles
+## Tests et sécurité
+- [ ] scénario positif et refus pour chacune des 3 règles
+- [ ] cas limite si pertinent
+- [ ] test rôle/accès direct
+- [ ] test CSRF formulaire
+- [ ] SQL paramétré
+- [ ] HTML échappé et entrées typées
+- [ ] mot de passe haché et secrets hors Git
+- [ ] recette écrite
 
 ## Maintenance
-- [ ] évolution analysée
-- [ ] évolution réalisée
-- [ ] incident reproduit
-- [ ] cause identifiée
-- [ ] correction réalisée
-- [ ] rapport d’incident
-- [ ] test ajouté
+- [ ] issue d'évolution et impact avant code
+- [ ] évolution terminée et testée
+- [ ] incident réel reproduit/analysé
+- [ ] correction + test de non-régression
+- [ ] rapport d'incident
 
 ## Livraison
-- [ ] documentation installation
-- [ ] documentation utilisateur
-- [ ] documentation API
-- [ ] sauvegarde BDD
-- [ ] restauration testée
-- [ ] déploiement vérifié
-- [ ] release finale
-- [ ] preuves organisées
-- [ ] démonstration préparée
+- [ ] installation/documentation
+- [ ] sauvegarde ET test de restauration BDD
+- [ ] déploiement ou environnement démontrable
+- [ ] release Git
+- [ ] preuve des compétences réellement mobilisées
+- [ ] [démonstration personnelle](../templates/DEMONSTRATION.md) préparée

@@ -1,72 +1,42 @@
-# 00 — Démarrage
+# 00 — La commande client du lundi matin
 
-## Avant de coder
+Vous êtes **prestataire individuel** pour un vrai type d'organisation fictive : festival, FabLab ou escape game. Vous devez livrer vendredi une application que le client pourrait comprendre et essayer.
 
-Vous devez disposer de votre propre dépôt Git. Le dépôt doit être accessible à l’enseignant et contenir l’intégralité de votre travail.
+## Avant toute ligne de code
 
-Votre premier travail consiste à créer :
+1. Lire les [trois sujets](../README.md).
+2. Choisir celui qui vous donne envie de montrer une vraie situation.
+3. Réserver les 3 règles contractuelles et les 3 extensions avec le [modèle de choix](../templates/CHOIX_REGLES.md).
+4. Créer votre dépôt Git individuel et un backlog.
+5. Rédiger un cahier des charges **personnalisé**, pas une copie des pages du dépôt.
 
-- un `README.md` ;
-- un dossier `docs/` ;
-- un dossier destiné aux maquettes ;
-- un backlog initial ;
-- votre modèle de données ;
-- votre document de choix des règles métier.
+## La scène de démonstration d'abord
 
-Utilisez les modèles fournis dans `templates/`.
+Écrivez un petit scénario :
 
-## Étapes obligatoires du lundi matin
+> « Je suis [acteur], je veux [action]. Comme [contrainte métier], l'application doit [résultat]. »
 
-### 1. Lire les trois sujets
+Il vous guidera pour choisir les entités, les écrans et les tests.
 
-Ne choisissez pas uniquement sur le thème. Regardez les entités, les workflows et les règles métier.
+## Livrables de conception lundi
 
-### 2. Choisir votre sujet
+- acteurs et cas d'usage ;
+- MCD/MLD et schéma relationnel initial ;
+- architecture MVC/Slim ;
+- maquette de l'accueil, tableau de bord, fiche métier, formulaire et cas de refus ;
+- tableau du contrat API initial ;
+- dépôt avec `README.md`, `docs/`, `docs/maquettes/`, `database/` et backlog.
 
-Le choix est définitif après validation de l’enseignant.
+Utilisez le [starter](../starter-kit/README.md) pour un premier trajet BDD → Slim → HTML/JSON. Ne le livrez pas sans authentification ni protections complémentaires.
 
-### 3. Choisir vos règles métier
+## Première victoire du lundi soir
 
-Vous sélectionnez 3 règles contractuelles et 3 règles d’extension selon [la procédure](03-selection-regles.md).
+**Une donnée créée ou lue en base apparaît dans le navigateur, et vous pouvez expliquer son parcours dans MVC.** C'est plus important que d'avoir douze pages HTML vides.
 
-### 4. Reformuler le besoin
+## Puis chaque jour
 
-Votre `docs/cahier-des-charges.md` doit expliquer avec vos propres mots :
-
-- l’organisation cliente ;
-- le problème à résoudre ;
-- les utilisateurs ;
-- les principales fonctionnalités ;
-- les règles sélectionnées ;
-- les critères de réussite.
-
-### 5. Concevoir
-
-Avant la réalisation des écrans :
-
-- diagramme de cas d’utilisation ou liste structurée des cas d’usage ;
-- MCD / schéma conceptuel ;
-- schéma relationnel ;
-- architecture MVC ;
-- maquettes des écrans principaux.
-
-### 6. Organiser le travail
-
-Transformez le cahier des charges en issues ou tâches. Classez-les au minimum en :
-
-- `must-have` ;
-- `should-have` ;
-- `bonus` ;
-- `bug`.
+Suivez le [GPS de la semaine](25-parcours-et-jalons.md) et vérifiez les jalons. Si vous travaillez chez vous, commencez par le premier élément manquant du chemin critique.
 
 ## Définition de « terminé »
 
-Une fonctionnalité n’est pas terminée parce que « ça marche sur mon PC ». Elle est terminée lorsqu’elle est :
-
-- implémentée ;
-- validée côté serveur ;
-- testée ;
-- cohérente avec les règles métier ;
-- intégrée à Git avec un historique propre ;
-- documentée si nécessaire ;
-- démontrable.
+Une fonctionnalité doit être **démontrable, contrôlée côté serveur, testée, persistée, intégrée à Git et explicable**. Un bouton qui semble fonctionner dans un seul navigateur ne suffit pas.

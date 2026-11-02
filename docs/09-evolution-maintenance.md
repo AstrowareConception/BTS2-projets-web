@@ -1,45 +1,40 @@
-# 09 — Évolution client & maintenance
+# 09 — Deux événements professionnels imprévus
 
-La semaine comprend volontairement un changement de besoin et un incident.
+Le projet reçoit une **nouvelle demande client mercredi** puis un **incident jeudi**. Vous devez démontrer votre capacité à modifier puis maintenir une solution existante.
 
-## Mercredi : évolution client
+## Mercredi — Un ticket d'évolution calibré
 
-L’enseignant vous attribue une évolution à partir d’une règle que vous n’aviez pas retenue comme contractuelle.
+L'enseignant choisit de préférence un besoin inspiré d'une des quatre règles que vous n'avez pas sélectionnées, mais **en réduit le périmètre à une tranche verticale réaliste**. Il ne s'agit pas d'ajouter obligatoirement une quatrième règle avancée complète.
 
-Avant de coder, créez une issue avec :
+**Exemple :** le client demande de rendre configurable un délai de préparation déjà fixe, et d'expliquer un refus dans le tableau de bord.
 
-1. besoin reformulé ;
-2. impact sur le modèle de données ;
-3. impact sur les écrans ;
-4. impact sur l’API ;
-5. impact sur les règles existantes ;
-6. tests à ajouter ou modifier ;
-7. estimation.
+### Avant de coder
 
-Puis seulement vous développez.
+Créez une issue :
+1. nouveau besoin reformulé ;
+2. composants concernés (modèle, repository, vues, API) ;
+3. données/migration éventuellement nécessaires ;
+4. cas de recette ;
+5. estimation ;
+6. risques de régression.
 
-## Jeudi : incident
+### Après
 
-Un incident vous est attribué. Vous devez :
+Commit identifiable, test associé, documentation et maquette mises à jour si impact réel.
 
-1. le reproduire ;
-2. noter les conditions de reproduction ;
-3. identifier la cause ;
-4. corriger ;
-5. ajouter ou adapter un test ;
-6. vérifier la non-régression ;
-7. rédiger un rapport.
+## Jeudi — Un incident sur votre produit réel
 
-Utilisez [le modèle de rapport d’incident](../templates/RAPPORT_INCIDENT.md).
+L'enseignant choisit un dysfonctionnement sur **une fonctionnalité que vous avez effectivement réalisée**. Il peut fournir un scénario de reproduction ou un jeu de données particulier. Il ne vous impose pas une correction sur une règle optionnelle absente.
 
-## Ce qui compte
+Vous devez :
+1. reproduire précisément ;
+2. observer méthode/statut/corps ou log ;
+3. formuler une hypothèse ;
+4. identifier la cause ;
+5. corriger ;
+6. ajouter un test de non-régression ;
+7. rédiger [le rapport d'incident](../templates/RAPPORT_INCIDENT.md).
 
-Le correctif seul ne suffit pas. On attend une **démarche de maintenance**.
+**Une panne SQL ne devient pas artificiellement un 404 ; un conflit métier ne doit pas produire une stack trace 500.**
 
-Un bon rapport permet de répondre :
-- que s’est-il passé ?
-- qui était impacté ?
-- comment reproduire ?
-- quelle était la cause ?
-- quelle correction a été faite ?
-- comment éviter la régression ?
+La qualité de votre diagnostic compte autant que la correction.

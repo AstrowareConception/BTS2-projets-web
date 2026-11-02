@@ -1,181 +1,142 @@
-# Sujet 2 — RepairLab
+# REPAIRLAB — Le FabLab ouvre dans une heure
 
-## Contexte
+**Client fictif :** un FabLab associatif proposant des ateliers de fabrication, réparation et découverte.  
+**Mission :** référencer les machines, réserver des créneaux, organiser la maintenance et rendre la disponibilité fiable.  
+**Promesse :** « Une machine en panne ou déjà réservée ne peut pas être utilisée par erreur. »
 
-**RepairLab** est un Repair Café / FabLab associatif. Il met à disposition des adhérents du matériel : imprimantes 3D, stations de soudure, ordinateurs, outils, machines de découpe et équipements de diagnostic.
+## Votre client
 
-La gestion actuelle ne permet pas de savoir rapidement ce qui est disponible, qui utilise quoi, quelles machines nécessitent une habilitation, ni quels incidents sont en cours.
+Le FabLab « La Fabrique Commune » possède des imprimantes 3D, une découpeuse, des postes de soudure, des PC et des outils partagés. L'atelier d'impression du soir approche ; un adhérent réserve une machine déjà occupée pendant qu'un technicien ouvre un incident. La direction veut un outil simple, pas un ERP industriel.
 
-L’application doit proposer une **vitrine publique** et un **système interne de réservation, suivi du matériel et maintenance**.
+Une **vitrine publique** présente le lieu et les équipements accessibles. Un **espace adhérent** permet de réserver et signaler les problèmes. Un **espace technicien** suit les interventions.
 
-## Utilisateurs
+## Démonstration finale
 
-### Visiteur
-- consulter le lieu, les ateliers et une partie du catalogue.
+Un adhérent réserve une imprimante depuis son compte ; un technicien signale ou traite un problème ; la disponibilité est cohérente sur la fiche HTML comme dans l'API. Vous provoquez ensuite trois scénarios de règles métier personnalisées, puis présentez une évolution et une correction.
 
-### Adhérent
-- consulter le matériel ;
-- réserver une ressource autorisée ;
-- déclarer un incident ;
-- consulter ses réservations.
+## Socle incompressible
 
-### Technicien
-- traiter les incidents ;
-- créer des interventions ;
-- gérer les états techniques.
+- Vitrine publique : présentation du FabLab et catalogue public (sans données personnelles).
+- Connexion et rôles **admin / technicien / adhérent** ; droits vérifiés serveur.
+- Inventaire des équipements (catégorie, statut technique, localisation, capacité de réservation unitaire).
+- Réservations avec début/fin et état : `DEMANDEE`, `CONFIRMEE`, `ANNULEE`, `TERMINEE` ; parcours de création/annulation.
+- Incidents, interventions simplifiées (diagnostic, action, état), recherche et filtres.
+- Tableau de bord de disponibilité, au moins une ressource API JSON et une écriture métier via API.
+- Traçabilité : auteur/date d'un incident, dates d'une intervention.
+- Données relationnelles cohérentes et testées.
 
-### Administrateur
-- gérer utilisateurs, rôles, équipements, catégories et habilitations.
+**Hors périmètre :** paiement, véritable contrôle électronique des machines, reconnaissance de badge, planning de personnel RH, IoT et commerce de pièces.
 
-## Entités suggérées
+### Modèle suggéré
 
-- User
-- Role
-- Equipment
-- EquipmentType
-- Qualification
-- UserQualification
-- Reservation
-- Incident
-- Intervention
-- Part / StockMovement
+`User`, `Equipment`, `EquipmentCategory`, `Reservation`, `Incident`, `Intervention`. Une règle peut nécessiter `Qualification`, `StockPart`, `StockMovement` ou `CheckIn`. Ne créez ces tables que si une règle choisie le justifie.
 
-## Fonctionnalités du socle
+### Invariants du socle (non sélectionnables)
 
-- catalogue public ;
-- authentification ;
-- rôles ;
-- inventaire ;
-- réservations ;
-- incidents ;
-- interventions ;
-- tableau de bord ;
-- recherche / filtres ;
-- API REST.
+Début avant fin ; équipement existant ; réservation d'un équipement unitaire sur un créneau libre (les demandes simultanées incompatibles sont refusées) ; pas d'intervention sur un incident inexistant. Ces règles simples sont **déjà obligatoires** : les règles ci-dessous apportent un comportement distinct.
 
-# Les 10 règles métier candidates
+## Dix règles candidates — 3 contractuelles, 3 extensions
 
-## R1 — Réservation sans chevauchement
-**Famille : temporalité / intégrité — multi-entités**
+### R1 — « La réservation prioritaire »
+**Famille : planning / autorisation · Difficulté : intermédiaire.**
 
-Un équipement ne peut pas être réservé par deux adhérents sur des créneaux qui se chevauchent.
+Certains créneaux sont réservés en priorité aux ateliers encadrés. Un adhérent ordinaire ne peut confirmer une réservation de ces créneaux, mais un responsable ou technicien autorisé peut affecter la machine à l'atelier.
 
-**Acceptation :**
-- détection côté serveur ;
-- bornes temporelles correctement gérées ;
-- message expliquant le conflit.
+**Démo :** créneau réservé à l'atelier impression ; deux profils, résultats différents.  
+**Tests :** adhérent/refus ; technicien/acceptation ; créneau ordinaire/acceptation.
 
-## R2 — Habilitation obligatoire
-**Famille : habilitation — multi-entités**
+### R2 — « Le permis machine »
+**Famille : qualification · Difficulté : intermédiaire.**
 
-Certains types d’équipements nécessitent une qualification. Une réservation est refusée si l’adhérent ne possède pas une qualification valide.
+Une machine dangereuse ou complexe exige une habilitation (`LASER`, `SOUDURE`, etc.) encore valide. L'adhérent sans qualification valide ne peut réserver ; une machine ordinaire reste accessible.
 
-**Acceptation :**
-- qualification rattachée au type d’équipement ;
-- date de validité possible ;
-- contrôle au moment de la réservation.
+**Démo :** découpeuse laser refusée, ordinateur accepté.  
+**Données :** qualification reliée à utilisateur et catégorie.  
+**Tests :** absence, expiration et présence.
 
-## R3 — Incident bloquant
-**Famille : workflow — multi-entités**
+### R3 — « Panne bloquante »
+**Famille : incident / disponibilité · Difficulté : intermédiaire.**
 
-Un incident critique ouvert rend l’équipement indisponible et bloque automatiquement les nouvelles réservations.
+La présence d'un incident **bloquant ouvert** interdit les nouvelles réservations de la machine. Les réservations existantes sont conservées et signalées « à vérifier » ; elles ne sont pas supprimées silencieusement.
 
-**Acceptation :**
-- indisponibilité dérivée de l’incident ;
-- message visible ;
-- retour à un état réservable après résolution selon les règles définies.
+**Démo :** machine disponible puis incident bloquant.  
+**Tests :** refus nouvelle réservation ; conservation historique ; retour après résolution.
 
-## R4 — Quota de réservations
-**Famille : calcul / quota — multi-entités**
+### R4 — « Pas plus de deux réservations actives »
+**Famille : quota · Difficulté : accessible.**
 
-Un adhérent ne peut avoir plus de N réservations actives simultanément. La valeur N est paramétrable.
+Pour limiter la monopolisation, un adhérent ne peut avoir plus de **deux réservations futures confirmées** en parallèle, quelle que soit la machine. Les réservations annulées ou passées ne comptent pas.
 
-**Acceptation :**
-- seules les réservations pertinentes comptent ;
-- message indiquant le quota.
+**Démo :** la troisième réservation est refusée, puis une annulation libère une place.  
+**Tests :** seuil ; annulation ; dates.
 
-## R5 — Retard et suspension temporaire
-**Famille : workflow / temporalité — multi-entités**
+### R5 — « Créneau perdu après absence »
+**Famille : temps / workflow · Difficulté : intermédiaire.**
 
-Après un nombre défini de retards de restitution sur une période donnée, l’adhérent est temporairement empêché de réserver.
+Le personnel peut marquer « absent » un adhérent qui ne s'est pas présenté **15 minutes après le début** d'un créneau. Une réservation `ABSENT` libère alors le créneau pour une nouvelle demande. L'opération est manuelle : aucun cron n'est exigé.
 
-**Acceptation :**
-- période et seuil documentés ;
-- historique conservé ;
-- date de fin de suspension connue.
+**Démo :** marquer absent trop tôt est refusé ; après délai autorisé.  
+**Tests :** avant seuil ; après seuil ; nouveau créneau disponible.
 
-## R6 — Cycle de vie d’un incident
-**Famille : workflow / habilitation**
+### R6 — « Un incident suit une procédure »
+**Famille : workflow / habilitation · Difficulté : accessible.**
 
-Un incident suit le cycle `OPEN -> IN_PROGRESS -> RESOLVED -> CLOSED`. Certains changements d’état sont réservés aux techniciens.
+États autorisés : `OUVERT → EN_COURS → RESOLU → CLOTURE`. Seul un technicien peut commencer, résoudre ou clôturer. Un retour arrière nécessite une réouverture explicite, tracée.
 
-**Acceptation :**
-- transitions invalides refusées ;
-- auteur et date des transitions conservés.
+**Démo :** tentative de clôture directe par un adhérent, puis transition correcte.  
+**Tests :** 403 ; transition interdite ; trace.
 
-## R7 — Consommation de pièces
-**Famille : stock / intégrité — multi-entités**
+### R7 — « Le stock de pièces ne passe jamais sous zéro »
+**Famille : stock / transaction · Difficulté : avancée.**
 
-Une intervention peut consommer des pièces détachées. La clôture est refusée si la consommation rend le stock négatif.
+Une intervention peut consommer des pièces. L'enregistrement de la consommation et du mouvement de stock est atomique : si le stock est insuffisant, **aucune** modification n'est conservée. Un retour est enregistré comme mouvement inverse, pas comme effacement.
 
-**Acceptation :**
-- mouvements de stock tracés ;
-- quantité disponible contrôlée ;
-- consommation liée à l’intervention.
+**Démo :** 2 buses disponibles, demande de 3 : refus sans mouvement.  
+**Tests :** succès ; échec sans stock négatif ; rollback/absence mouvement.
 
-## R8 — Pannes répétées
-**Famille : agrégation / automatisation — multi-entités**
+### R8 — « Trois pannes en trente jours »
+**Famille : historique / calcul · Difficulté : intermédiaire.**
 
-Si un équipement cumule au moins X incidents techniques sur Y jours, il passe en état `REVIEW_REQUIRED` et doit être contrôlé avant nouvelle réservation.
+Si une machine cumule **trois incidents techniques distincts** ouverts durant les trente derniers jours, son tableau de bord affiche `CONTROLE_REQUIS`. Un technicien peut lever cet indicateur après un contrôle documenté.
 
-**Acceptation :**
-- X et Y documentés ;
-- calcul sur l’historique ;
-- remise en service explicite par un technicien.
+**Démo :** deuxième puis troisième incident.  
+**Tests :** seuil ; incident ancien ignoré ; levée tracée.
 
-## R9 — Disponibilité calculée
-**Famille : calcul / workflow — multi-entités**
+### R9 — « La vraie disponibilité expliquée »
+**Famille : calcul / UX · Difficulté : intermédiaire.**
 
-L’état « disponible à la réservation » dépend de l’état technique, des incidents bloquants, des réservations et des éventuelles périodes de maintenance.
+Pour une période demandée, l'application annonce un statut précis : `DISPONIBLE`, `DEJA_RESERVE`, `HORS_SERVICE` ou `MAINTENANCE`. Elle indique **la raison**, pas seulement un booléen. Le calcul utilise les états/horaires du socle, indépendamment des autres règles.
 
-**Acceptation :**
-- une fonction/service centralise le calcul ;
-- l’interface explique pourquoi un matériel est indisponible.
+**Démo :** changer date et état technique : raisons différentes.  
+**Tests :** réservation concurrente ; maintenance ; libre.
 
-## R10 — Clôture d’intervention avec validation
-**Famille : qualité / workflow — multi-entités**
+### R10 — « Validation qualité avant remise en service »
+**Famille : maintenance / qualité · Difficulté : intermédiaire.**
 
-Une intervention ne peut être clôturée qu’après saisie d’un diagnostic, d’une action réalisée et d’un résultat de test final.
+Après une intervention, une machine signalée hors service ne peut redevenir disponible sans **diagnostic, action effectuée et résultat de test** enregistrés par un technicien.
 
-**Acceptation :**
-- champs obligatoires côté serveur ;
-- résultat du test historisé ;
-- équipement remis en service seulement si le test le permet.
+**Démo :** tentative de remise en service sans compte rendu, puis saisie complète.  
+**Tests :** dossier incomplet/refus ; dossier complet/succès.
 
-## Exemples d’API
+## Données de démonstration
+
+6 équipements dont une machine demandant une qualification, 4 adhérents, 1 technicien, 1 administrateur, 5 réservations à des créneaux variés, 2 incidents et une intervention. Préparez des données qui permettent de **provoquer puis résoudre** les situations de vos règles choisies.
+
+## Routes API possibles
 
 ```http
-GET /api/equipment
-GET /api/equipment/{id}/availability
-POST /api/reservations
+GET  /api/equipment
+GET  /api/equipment/{id}
+GET  /api/reservations?equipmentId=2
 POST /api/incidents
 ```
 
-## Pistes de maquette
+## Maquettes attendues
 
-- catalogue ;
-- fiche équipement ;
-- réservation ;
-- espace adhérent ;
-- tableau de bord technicien ;
-- fiche incident/intervention ;
-- état des stocks.
+Catalogue public, fiche équipement, réservation, « mes créneaux », tableau de bord technicien, détail incident et message de refus métier. Utilisez des données fictives et un site crédible pour une association locale.
 
-## Bonus spécifiques
+## Défis supplémentaires
 
-- QR code par équipement ;
-- calendrier de réservation ;
-- import d’inventaire CSV ;
-- indicateurs MTTR simplifiés ;
-- alertes de stock bas ;
-- historique complet d’un équipement.
+QR code de fiche machine, export CSV de l'inventaire, panneau « atelier du jour », indicateurs de réparation. Le but n'est pas de faire une boutique de composants.
+
+**Argument de soutenance :** gestion de disponibilité, persistance, habilitations et maintenance corrective d'une solution métier, avec règles vérifiables.

@@ -1,57 +1,50 @@
-# 07 — Tests, qualité & sécurité
+# 07 — Tester et sécuriser la réalisation
 
-## Tests minimum
+La [méthode de préparation des scénarios](26-tests-et-demonstration.md) et les fiches sujets précisent le **cas positif, le refus et le cas limite** de chacune des 30 règles candidates.
 
-Vous devez présenter une stratégie de test, pas simplement dire « j’ai cliqué partout ».
+## Pourquoi les tests sont importants
 
-### Pour les règles contractuelles
-Chaque règle possède au minimum :
-- un cas nominal ;
-- un cas limite ou refus ;
-- un résultat attendu précis.
+Vous ne prouvez pas seulement que le bouton fonctionne : vous prouvez qu'une action interdite **reste interdite même si l'on contourne le formulaire**.
 
-### Test automatisé
-Vous devez produire plusieurs tests automatisés pertinents lorsque l’architecture le permet.
+### Minimum
 
-Priorité aux services métier et règles importantes plutôt qu’aux getters/setters.
+Pour chaque règle contractuelle :
+- un scénario accepté ;
+- un scénario refusé ;
+- un cas limite si pertinent ;
+- preuve du résultat côté interface ou API ;
+- justification du composant qui applique la règle.
 
-### Recette
-Complétez [le modèle de recette](../templates/RECETTE.md).
+Ajouter une recette de connexion, un contrôle d'accès direct, un test CSRF et un test API. Les tests automatisés sont fortement encouragés lorsque la structure du code le permet.
 
-## Tests de non-régression
+## Testez le métier dans le bon composant
 
-Après l’évolution et après l’incident, exécutez à nouveau les tests concernés. Ajoutez un test si le défaut révélait un cas non couvert.
+Une règle durable doit être portée par un modèle/service ; un repository ne choisit pas les codes HTTP ; un contrôleur ne doit pas être un assemblage de SQL et HTML. La séparation rend les tests possibles.
 
-## Sécurité minimale obligatoire
+## Vérifications de sécurité incontournables
 
-- mot de passe haché avec une fonction adaptée ;
-- validation serveur ;
-- requêtes paramétrées / couche d’accès aux données sûre ;
-- contrôle des habilitations côté serveur ;
-- protection contre les accès directs à une ressource interdite ;
-- échappement des données affichées ;
-- secrets hors dépôt ;
-- cookies/session configurés proprement ;
-- messages d’erreur ne révélant pas de secret.
+- `password_hash()`, `password_verify()` et régénération de session à la connexion ;
+- vérification des **rôles serveur** pour chaque écriture sensible ;
+- `CSRF` sur les actions HTML authentifiées reposant sur les cookies ;
+- validation **des types**, formats, valeurs et longueurs des entrées ;
+- SQL paramétré via PDO/Medoo, jamais concaténation ;
+- `htmlspecialchars` dans les vues ;
+- secrets ignorés par Git ;
+- cookies de session configurés selon le contexte (Secure sous HTTPS, HttpOnly, SameSite) ;
+- erreurs techniques journalisées, non affichées au public.
 
-## Journalisation
+### Scénarios de sécurité
 
-Vous devez journaliser au moins quelques événements utiles :
+1. Accédez à une URL protégée avec un autre rôle : refus.
+2. Retirez le jeton CSRF d'un POST de formulaire : **403**.
+3. Envoyez une valeur tableau à la place d'une chaîne : aucun crash.
+4. Essayez un identifiant inexistant : **404**, pas une panne SQL.
+5. Affichez une saisie contenant des caractères HTML : texte échappé.
+6. Testez un conflit horaire/stock si votre règle l'exige : refus métier clair.
 
-- connexion refusée ;
-- action sensible ;
-- erreur applicative importante ;
-- incident pertinent pour le métier.
+## Intégration et non-régression
 
-Les logs ne doivent pas contenir de mots de passe ou secrets.
+Mercredi : ajouter un test correspondant à la nouvelle demande.  
+Jeudi : reproduire le défaut, corriger, rejouer les parcours existants et conserver un test qui aurait détecté le problème.
 
-## Vérification manuelle
-
-Avant livraison, essayez volontairement :
-- URL d’administration avec un compte simple ;
-- identifiant inexistant ;
-- paramètres manquants ;
-- valeurs absurdes ;
-- doublons ;
-- conflit métier ;
-- tentative d’accès à une ressource d’un autre utilisateur.
+Les cours détaillent les distinctions **validation / normalisation / échappement**, les transactions et les tests de contrôleurs. Voir [la table des pages](24-ponts-avec-les-cours.md).

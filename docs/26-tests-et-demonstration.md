@@ -58,6 +58,17 @@ Conservez :
 
 Le vendredi, vous ne devez pas improviser les personnes, les horaires et les incidents depuis une base vide.
 
+## Recette obligatoire des objets SQL avancés
+
+Les scripts doivent être versionnés et **rejoués sur une base de test neuve**. Documentez et vérifiez :
+
+- pour chacune des **deux vues**, un résultat métier cohérent et sa lecture effective via le repository / l'interface ;
+- pour la **procédure**, un CALL de contrôle puis son appel PHP (paramètres, résultat/effet, cas limite) ;
+- pour le **trigger**, l'opération qui le déclenche, l'état avant/après et un cas de non-déclenchement ou de refus pertinent ;
+- pour la base, la reconstruction du schéma et des objets à partir du dépôt Git, avec un jeu de données fictives.
+
+Les erreurs techniques SQL ne doivent pas être affichées telles quelles au public. Le [guide SQL avancé](27-sql-avance-dans-le-projet.md) fournit les modalités et exemples.
+
 ## Démonstration finale — 7 minutes maximum
 
 1. **40 s :** organisation cliente et problème.

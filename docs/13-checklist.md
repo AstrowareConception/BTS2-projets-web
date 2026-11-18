@@ -8,6 +8,7 @@
 - [ ] maquette validée
 - [ ] MCD/MLD, architecture, cas d'usage
 - [ ] jeu de données de démonstration
+- [ ] objets SQL avancés planifiés sur un besoin réel, avec fichiers versionnés
 
 ## Application
 - [ ] partie publique utile
@@ -19,6 +20,9 @@
 - [ ] 3 règles contractuelles terminées et démontrables
 - [ ] extension n°1 si le temps le permet
 - [ ] traces d'incidents ou décisions pertinentes
+- [ ] **1 trigger pertinent minimum**, déclenché et vérifié
+- [ ] **1 procédure stockée minimum**, appelée depuis un repository PHP
+- [ ] **2 vues SQL minimum**, chacune utilisée depuis le code PHP
 
 ## Contrat API
 - [ ] GET collection : tableau JSON
@@ -37,6 +41,7 @@
 - [ ] HTML échappé et entrées typées
 - [ ] mot de passe haché et secrets hors Git
 - [ ] recette écrite
+- [ ] tests du trigger (effet et absence d'effet/refus si pertinent), de la procédure et des deux vues
 
 ## Maintenance
 - [ ] issue d'évolution et impact avant code
@@ -47,6 +52,7 @@
 
 ## Livraison
 - [ ] installation/documentation
+- [ ] scripts SQL ordonnés ou migrations dans Git, et reconstruction testée sur base vierge
 - [ ] sauvegarde ET test de restauration BDD
 - [ ] déploiement ou environnement démontrable
 - [ ] release Git

@@ -25,6 +25,10 @@ Ce projet s'appuie sur **quatre supports de cours reçus avant la semaine du 23 
 | Contrôleur JSON partageant le domaine | **REST/Slim 4**, pp. 52–67 | HTML et JSON utilisant les mêmes services |
 | PUT/PATCH/DELETE, qualité | **REST/Slim 4**, pp. 68–89 | mise à jour d'une ressource et tests HTTP |
 
+## Complément — SQL avancé
+
+Le cours complémentaire sur les **vues, procédures stockées et triggers** est désormais mobilisé dans le projet : **deux vues interrogées par le code, une procédure appelée depuis un repository et un trigger pertinent**, avec les définitions SQL versionnées. Les numéros de diapositive ne sont pas fournis ici : consultez le support SQL avancé distribué par l'enseignant et le [guide d'intégration](27-sql-avance-dans-le-projet.md).
+
 ## Ce que vos cours permettent déjà
 
 Il n'est pas demandé de découvrir un nouveau framework frontend, une architecture microservices ou OAuth2. **Slim 4 + MVC + modèles/services + repository + BDD + HTML/JSON** suffisent à produire une RP solide.

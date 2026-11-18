@@ -27,6 +27,12 @@ Trois sujets, **un même cadre d'apprentissage**, mais six réalisations individ
 9. Une petite API de liste/détail/écriture partageant les règles du site.
 10. Une trace métier pertinente (incident, affectation, changement de statut...).
 
+## Clause SQL avancé obligatoire (transversale)
+
+Les étudiants doivent réaliser **au moins un trigger pertinent**, **une procédure stockée appelée par un repository PHP** et **deux vues SQL utiles, toutes deux réellement exploitées dans le code**. Ces objets SQL, ainsi que le schéma et les données fictives, doivent être **versionnés dans Git et reproductibles** grâce à des scripts ordonnés ou à des migrations documentées.
+
+Ces mécanismes doivent servir le métier existant (tableau de bord, suivi, refus, traçabilité…) et ne constituent **pas trois règles contractuelles supplémentaires**. Slim ne fournit pas de migrations natives ; Medoo permet d'utiliser PDO pour appeler une procédure. Voir le [guide SQL avancé et migrations](27-sql-avance-dans-le-projet.md).
+
 ## Trois règles choisies et réellement exécutées
 
 Les 10 règles de chaque fiche sont des **options de personnalisation**, pas 10 développements obligatoires. Seules les **3 contractuelles** doivent toutes être terminées ; les 3 extensions définissent le backlog supplémentaire. L'évolution du jeudi matin est un ticket distinct de taille contrôlée.

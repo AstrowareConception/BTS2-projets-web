@@ -163,6 +163,12 @@ Une requête complexe justifiée vaut mieux qu'une acrobatie illisible avec une 
 - test ;
 - justification.
 
+### Vues et procédures du projet
+
+Pour le projet de semaine, le [guide SQL avancé](27-sql-avance-dans-le-projet.md) exige **deux vues effectivement interrogées**, **une procédure stockée appelée depuis un repository** et **un trigger pertinent**. Une vue se lit via un SELECT (ou une opération Medoo de lecture) ; une procédure se lance avec CALL. Medoo expose le PDO sous-jacent via la propriété documentée database->pdo : voir https://medoo.in/api/pdo.
+
+**Important :** les définitions SQL sont conservées dans des scripts/migrations du dépôt ; le code du repository doit réutiliser les objets créés, pas reconstruire les objets SQL à chaque requête.
+
 ## 12. Repository
 
 Évitez d'appeler Medoo partout.

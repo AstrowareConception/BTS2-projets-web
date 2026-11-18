@@ -29,6 +29,10 @@ Le festival « Les Nuits du Phare » approche. Deux scènes, une salle de confé
 - Une API JSON consommable indépendamment de l'HTML, avec au minimum liste, détail et une création métier.
 - Historique minimal : date et auteur d'un signalement ou changement significatif.
 
+### Clause SQL avancé (obligatoire, commune aux trois sujets)
+
+Votre application doit comporter **au moins un trigger métier**, **une procédure stockée appelée depuis un repository PHP** et **deux vues SQL effectivement exploitées depuis PHP**. Par exemple, vous pouvez historiser le changement d'état d'une activité, calculer un bilan d'affectations et utiliser des vues pour le programme publié et le tableau de bord. Les objets doivent être **versionnés dans Git** et reconstruisibles grâce aux scripts/migrations du projet. Ils peuvent servir vos trois règles contractuelles, **sans ajouter de règles au triplet**. Consultez [les exigences précises et la compatibilité avec Medoo](../docs/27-sql-avance-dans-le-projet.md).
+
 **À ne pas développer :** paiement, vente de billets, SMS, géolocalisation temps réel, météo externe automatique, système d'emails complexe. Ces intégrations ne sont pas nécessaires à la RP.
 
 ### Modèle de départ (à adapter et justifier)

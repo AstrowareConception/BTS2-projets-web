@@ -22,6 +22,8 @@ Ne développez pas les 10 règles « en même temps ».
 **Matin :** connexion/déconnexion, rôles, sessions et protections de formulaires, structure des repositories.  
 **Après-midi :** gestion des principales entités et workflow de base, recherche/filtres, un tableau de bord crédible, premiers tests de recette.
 
+Pendant la construction du tableau de bord, identifiez les **deux vues SQL** qui éviteront de répéter des jointures ; choisissez également une action métier adaptée au **trigger** et une opération à centraliser dans la **procédure stockée**. [Guide SQL](27-sql-avance-dans-le-projet.md).
+
 **Fin mardi :** un utilisateur peut réaliser **un parcours métier entier** avec le bon rôle et la bonne donnée persistante.
 
 🟢 login/roles + vrai workflow. 🟠 parcours partiellement terminé. 🔴 seulement des formulaires isolés ou de fausses données.
@@ -39,6 +41,8 @@ Ne développez pas les 10 règles « en même temps ».
 
 **Matin :** évolution courte attribuée, mise à jour de la modélisation si nécessaire et tests de non-régression.  
 **Après-midi :** incident réaliste choisi parmi des parcours effectivement présents, reproduction, diagnostic, correction, test et rapport. Selon le temps : première extension.
+
+Avant de figer le produit, intégrez les **vues**, la **procédure appelée dans le repository** et le **trigger** à vos parcours existants. Gardez leurs définitions dans Git et prévoyez un test de reconstruction sur base neuve.
 
 **Fin jeudi :** l'évolution et l'incident sont traçables ; les trois règles demeurent stables.
 

@@ -5,9 +5,9 @@
 - dépôt Git complet ;
 - application fonctionnelle ;
 - base de données ;
-- scripts/migrations nécessaires ;
+- scripts SQL ou migrations **versionnés** permettant de reconstruire le schéma, **au moins deux vues consommées par le code, une procédure stockée appelée par un repository PHP et un trigger métier effectivement déclenché** ;
 - API REST ;
-- tests ;
+- tests, dont essais ciblés des vues, de la procédure et du trigger (cas normal / effet / refus selon le mécanisme) ;
 - release finale ;
 - application déployée lorsque l’environnement le permet.
 
@@ -51,5 +51,6 @@ Votre README doit permettre à une personne extérieure de comprendre :
 - ce que fait le produit ;
 - comment l’installer ;
 - comment l’utiliser ;
+- comment recréer la base à partir des scripts versionnés et vérifier les objets SQL avancés ;
 - quelles règles ont été choisies ;
 - où trouver les preuves.

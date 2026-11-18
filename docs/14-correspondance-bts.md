@@ -32,6 +32,8 @@ La base permet de travailler :
 - requêtes ;
 - conception/adaptation du schéma ;
 - contraintes ;
+- développement de fonctionnalités au sein du SGBD (vues, procédure et trigger réellement utilisés) ;
+- versionnement et redéploiement reproductible des objets SQL ;
 - droits selon l’environnement retenu ;
 - déploiement ;
 - sauvegarde et restauration.

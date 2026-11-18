@@ -26,6 +26,10 @@ Vous créez un outil professionnel **de planning et d'exploitation**. Son habill
 - Au moins une relation N–N utile (salle ↔ équipement via table d'affectation, ou session ↔ intervenant).
 - API JSON permettant liste/détail et création d'un incident ou réservation.
 
+### Clause SQL avancé (obligatoire, commune aux trois sujets)
+
+Votre application doit comporter **au moins un trigger métier**, **une procédure stockée appelée depuis un repository PHP** et **deux vues SQL effectivement exploitées depuis PHP**. Par exemple, vous pouvez historiser les transitions d'une session, calculer un bilan par salle et exploiter des vues pour le planning et le tableau de bord. Les objets doivent être **versionnés dans Git** et reconstruisibles grâce aux scripts/migrations du projet. Ils peuvent servir vos trois règles contractuelles, **sans ajouter de règles au triplet**. Consultez [les exigences précises et la compatibilité avec Medoo](../docs/27-sql-avance-dans-le-projet.md).
+
 **Invariants non sélectionnables :** fin après début ; impossible de réserver une session supprimée, passée ou déjà confirmée ; l'utilisateur ne peut modifier une session sans droit. Ces garde-fous forment le socle.
 
 ## Les 10 règles métier

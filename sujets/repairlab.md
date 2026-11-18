@@ -25,6 +25,10 @@ Un adhérent réserve une imprimante depuis son compte ; un technicien signale o
 - Traçabilité : auteur/date d'un incident, dates d'une intervention.
 - Données relationnelles cohérentes et testées.
 
+### Clause SQL avancé (obligatoire, commune aux trois sujets)
+
+Votre application doit comporter **au moins un trigger métier**, **une procédure stockée appelée depuis un repository PHP** et **deux vues SQL effectivement exploitées depuis PHP**. Par exemple, vous pouvez historiser les changements d'état d'une machine, obtenir un bilan d'interventions et exploiter des vues pour la disponibilité et les incidents. Les objets doivent être **versionnés dans Git** et reconstruisibles grâce aux scripts/migrations du projet. Ils peuvent servir vos trois règles contractuelles, **sans ajouter de règles au triplet**. Consultez [les exigences précises et la compatibilité avec Medoo](../docs/27-sql-avance-dans-le-projet.md).
+
 **Hors périmètre :** paiement, véritable contrôle électronique des machines, reconnaissance de badge, planning de personnel RH, IoT et commerce de pièces.
 
 ### Modèle suggéré

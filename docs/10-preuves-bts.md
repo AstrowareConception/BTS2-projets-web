@@ -25,6 +25,8 @@ docs/preuves/
 - maquettes ;
 - MCD / diagrammes ;
 - schéma SQL ;
+- scripts/migrations versionnés des vues, procédures et triggers, avec ordre de déploiement ;
+- preuves d'utilisation **effective** des deux vues et de la procédure dans les repositories, et de déclenchement du trigger ;
 - extraits de code ciblés ;
 - tests ;
 - rapport de recette ;
@@ -61,7 +63,7 @@ Vous devez pouvoir expliquer en quelques minutes :
 1. le besoin ;
 2. votre architecture ;
 3. une règle métier complexe ;
-4. une décision de modélisation ;
+4. une décision de modélisation et le choix d'un mécanisme SQL avancé (vue, procédure ou trigger) ;
 5. un test ;
 6. l’évolution ;
 7. l’incident ;

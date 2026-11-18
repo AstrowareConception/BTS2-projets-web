@@ -7,7 +7,7 @@ Cette grille aide à apprécier la réalisation de manière homogène. Elle peut
 | Analyse & conception | 15 | besoin, modèle, architecture, maquettes |
 | Fonctionnalités métier | 20 | socle cohérent et workflows |
 | Règles contractuelles | 15 | 3 règles correctes et démontrables |
-| Données | 10 | modèle, requêtes, intégrité |
+| Données | 10 | modèle, requêtes, intégrité, **2 vues consommées**, **1 procédure appelée depuis PHP**, **1 trigger pertinent** et scripts/migrations versionnés |
 | API & échanges | 8 | endpoints cohérents et documentés |
 | Tests & qualité | 10 | cas pertinents, recette, non-régression |
 | Sécurité | 7 | auth, habilitations, validation, secrets, logs |
